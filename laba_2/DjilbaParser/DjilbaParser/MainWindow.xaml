@@ -1,0 +1,215 @@
+﻿<Window x:Class="DjilbaParser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DjilbaParser"
+        mc:Ignorable="d"
+        Title="Метрика Джилба — анализатор C#"
+        Height="760"
+        Width="1250"
+        MinHeight="620"
+        MinWidth="980"
+        WindowStartupLocation="CenterScreen"
+        Background="#F4F6F8">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel Margin="18">
+        <Border DockPanel.Dock="Top"
+                Background="White"
+                CornerRadius="10"
+                Padding="16"
+                Margin="0,0,0,14">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Метрика Джилба"
+                           FontSize="24"
+                           FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="1"
+                           Margin="0,5,0,0"
+                           Foreground="#5E6872"
+                           Text="Анализ исходного кода C# по CL, cl и CLI"/>
+            </Grid>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom"
+                Background="White"
+                CornerRadius="10"
+                Padding="12"
+                Margin="0,14,0,0">
+            <TextBlock x:Name="StatusText"
+                       Foreground="#5E6872"
+                       Text="Готово. Выберите файл или используйте встроенный пример."/>
+        </Border>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="14"
+                    Margin="0,0,10,0">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Content="Открыть .cs"
+                                Click="OpenFileButton_Click"/>
+                        <Button Grid.Column="1"
+                                Content="Анализировать"
+                                Click="AnalyzeButton_Click"/>
+                        <Button Grid.Column="2"
+                                Content="Встроенный пример"
+                                Click="SampleButton_Click"/>
+                        <TextBlock Grid.Column="3"
+                                   x:Name="FileNameText"
+                                   VerticalAlignment="Center"
+                                   Margin="8,0,0,0"
+                                   Foreground="#5E6872"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </Grid>
+
+                    <TextBox x:Name="CodeTextBox"
+                             FontFamily="Consolas"
+                             FontSize="13"
+                             AcceptsReturn="True"
+                             AcceptsTab="True"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto"
+                             IsReadOnly="True"
+                             TextWrapping="NoWrap"
+                             Background="#FBFCFD"
+                             BorderBrush="#D8DEE4"
+                             Padding="12"/>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="18"
+                    Margin="10,0,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Результат анализа"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,16"/>
+
+                        <Border Background="#F6F8FA"
+                                CornerRadius="8"
+                                Padding="14"
+                                Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Абсолютная сложность CL"
+                                           Foreground="#5E6872"/>
+                                <TextBlock x:Name="AbsoluteValueText"
+                                           Text="—"
+                                           FontSize="31"
+                                           FontWeight="SemiBold"
+                                           Margin="0,3,0,0"/>
+                                <TextBlock Text="Количество условных операторов с учётом case"
+                                           Foreground="#7A838C"
+                                           TextWrapping="Wrap"
+                                           Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#F6F8FA"
+                                CornerRadius="8"
+                                Padding="14"
+                                Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Относительная сложность cl"
+                                           Foreground="#5E6872"/>
+                                <TextBlock x:Name="RelativeValueText"
+                                           Text="—"
+                                           FontSize="31"
+                                           FontWeight="SemiBold"
+                                           Margin="0,3,0,0"/>
+                                <TextBlock x:Name="RelativeFormulaText"
+                                           Text="CL / число операторов"
+                                           Foreground="#7A838C"
+                                           Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#F6F8FA"
+                                CornerRadius="8"
+                                Padding="14"
+                                Margin="0,0,0,18">
+                            <StackPanel>
+                                <TextBlock Text="Максимальный уровень вложенности CLI"
+                                           Foreground="#5E6872"/>
+                                <TextBlock x:Name="NestingValueText"
+                                           Text="—"
+                                           FontSize="31"
+                                           FontWeight="SemiBold"
+                                           Margin="0,3,0,0"/>
+                                <TextBlock Text="Уровни считаются от 0, с учётом вложенных циклов и ветвлений"
+                                           Foreground="#7A838C"
+                                           TextWrapping="Wrap"
+                                           Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="Контрольные данные"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock x:Name="OperatorsText"
+                                   Foreground="#3E4852"
+                                   Margin="0,0,0,3"/>
+                        <TextBlock x:Name="CasesText"
+                                   Foreground="#3E4852"
+                                   Margin="0,0,0,3"/>
+                        <TextBlock Text="default не увеличивает CL; для n case вклад в CL равен n"
+                                   Foreground="#5E6872"
+                                   TextWrapping="Wrap"
+                                   Margin="0,5,0,0"/>
+
+                        <Separator Margin="0,18,0,14"/>
+
+                        <TextBlock Text="Формула"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+                        <TextBlock Text="CL = количество if + количество обычных case"
+                                   Foreground="#3E4852"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,4"/>
+                        <TextBlock Text="cl = CL / N, где N — общее число подсчитанных операторов"
+                                   Foreground="#3E4852"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,4"/>
+                        <TextBlock Text="CLI = максимальный уровень вложенности условных конструкций; switch с n case даёт n−1 вложенных уровней"
+                                   Foreground="#3E4852"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>
